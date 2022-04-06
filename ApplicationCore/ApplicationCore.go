@@ -79,7 +79,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 
 			ApplicationCore.WebCore.Router = mux.NewRouter()
 		}
-		ApplicationCore.ApplicationPort = ApplicationPort.(int64)
+		ApplicationCore.ApplicationPort = int64(ApplicationPort.(float64))
 	} else {
 
 		return errors.New("В файле Settings.json не указан порт приложения")

@@ -70,8 +70,8 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 		case "FileServer":
 			if ApplicationCore.WebCore.Router == nil {
 				ApplicationCore.WebCore.Router = mux.NewRouter()
-				fileServer := http.FileServer(http.Dir("./Static"))
-				ApplicationCore.WebCore.Router.PathPrefix("/").Handler(http.StripPrefix("/static", fileServer))
+				FileServer := http.FileServer(http.Dir("./Static"))
+				ApplicationCore.WebCore.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static", FileServer))
 			}
 
 		case "Database":

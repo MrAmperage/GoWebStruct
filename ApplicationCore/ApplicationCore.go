@@ -11,6 +11,7 @@ import (
 	"github.com/MrAmperage/GoWebStruct/WebCore/Modules"
 	"github.com/gorilla/mux"
 	"github.com/mitchellh/mapstructure"
+	"github.com/streadway/amqp"
 )
 
 func (ApplicationCore *ApplicationCore) Init() (Error error) {
@@ -60,6 +61,10 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 		case "RabbitMQ":
 			var NewRabbitMQSetting Modules.RabbitMQSetting
 			mapstructure.Decode(Setting, &NewRabbitMQSetting)
+			NewRabbitMQSetting.Connection, Error = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%d/", NewRabbitMQSetting.Login, NewRabbitMQSetting.Password, NewRabbitMQSetting.Adress, NewRabbitMQSetting.Port))
+			if Error != nil {
+				return Error
+			}
 			ApplicationCore.WebCore.RabbitMQConnections = append(ApplicationCore.WebCore.RabbitMQConnections, NewRabbitMQSetting)
 
 		case "FileServer":

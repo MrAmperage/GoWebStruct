@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/MrAmperage/GoWebStruct/WebCore"
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -40,7 +40,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 		switch ModuleType {
 
 		case "RabbitMQ":
-			var NewRabbitMQSetting WebCore.RabbitMQSetting
+			var NewRabbitMQSetting Modules.RabbitMQSetting
 			mapstructure.Decode(Setting, &NewRabbitMQSetting)
 			ApplicationCore.WebCore.RabbitMQConnections = append(ApplicationCore.WebCore.RabbitMQConnections, NewRabbitMQSetting)
 

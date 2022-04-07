@@ -18,7 +18,8 @@ type RabbitMQQueue struct {
 }
 
 type RabbitMQSubscribe struct {
-	Name string
+	Name     string
+	Messages <-chan amqp.Delivery
 }
 type RabbitMQChanel struct {
 	Chanel     *amqp.Channel

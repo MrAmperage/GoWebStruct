@@ -24,9 +24,14 @@ func (ApplicationCore *ApplicationCore) Init() (Error error) {
 }
 
 func (ApplicationCore *ApplicationCore) Start() (Error error) {
+
 	if ApplicationCore.WebCore.Router == nil {
 		return errors.New("Вы не инициализировани настройки приложения")
 	} else {
+		Error := ApplicationCore.InitRabbitMQChanels()
+		if Error != nil {
+			return Error
+		}
 		Error = http.ListenAndServe(fmt.Sprintf(":%d", ApplicationCore.ApplicationPort), ApplicationCore.WebCore.Router)
 		if Error != nil {
 			return Error
@@ -35,7 +40,27 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 
 	return Error
 }
+func (ApplicationCore *ApplicationCore) InitRabbitMQChanels() (Error error) {
+	if len(ApplicationCore.WebCore.RabbitMQConnections) > 0 {
+		for _, RabbitConnection := range ApplicationCore.WebCore.RabbitMQConnections {
+			for _, RabbitQueue := range RabbitConnection.Queues {
+				RabbitMQChanel, Error := RabbitConnection.Connection.Channel()
+				if Error != nil {
+					return Error
+				}
+				RabbitMQChanel.QueueDeclare(RabbitQueue.Name, false,
+					false,
+					false,
+					false,
+					nil)
 
+			}
+
+		}
+
+	}
+	return Error
+}
 func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 
 	_, Error = os.Stat("Settings.json")

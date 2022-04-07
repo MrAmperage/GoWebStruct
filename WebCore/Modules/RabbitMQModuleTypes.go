@@ -9,4 +9,10 @@ type RabbitMQSetting struct {
 	Password   string
 	Port       int64
 	Adress     string
+	Queues     []RabbitQueue
+}
+
+type RabbitQueue struct {
+	Name  string
+	Queue *amqp.Queue
 }

@@ -26,3 +26,14 @@ type RabbitMQChanel struct {
 	QueuesUP   []RabbitMQQueue
 	Subscribes []RabbitMQSubscribe
 }
+
+func (RabbitMQSetting *RabbitMQSetting) QueuesSubscribe() (Error error) {
+	for _, RabbitMQSubscribe := range RabbitMQSetting.RabbitMQChanel.Subscribes {
+		RabbitMQSubscribe.Messages, Error = RabbitMQSetting.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Name, "", true, false, false, false, nil)
+		if Error != nil {
+			return Error
+		}
+
+	}
+	return Error
+}

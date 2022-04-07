@@ -58,14 +58,10 @@ func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
 			}
 
 		}
-		for _, RabbitMQSubscribe := range RabbitMQSetting.RabbitMQChanel.Subscribes {
-			RabbitMQSubscribe.Messages, Error = RabbitMQSetting.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Name, "", true, false, false, false, nil)
-			if Error != nil {
-				return Error
-			}
-
+		Error := RabbitMQSetting.QueuesSubscribe()
+		if Error != nil {
+			return Error
 		}
-
 	}
 
 	return Error

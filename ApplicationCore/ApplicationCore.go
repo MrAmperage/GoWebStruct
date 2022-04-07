@@ -28,7 +28,7 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 	if ApplicationCore.WebCore.Router == nil {
 		return errors.New("Вы не инициализировани настройки приложения")
 	} else {
-		Error := ApplicationCore.InitRabbitMQQueues()
+		Error := ApplicationCore.InitRabbitMQ()
 		if Error != nil {
 			return Error
 		}
@@ -40,27 +40,37 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 
 	return Error
 }
-func (ApplicationCore *ApplicationCore) InitRabbitMQQueues() (Error error) {
-	if len(ApplicationCore.WebCore.RabbitMQConnections) > 0 {
-		for _, RabbitConnection := range ApplicationCore.WebCore.RabbitMQConnections {
-			for _, RabbitQueue := range RabbitConnection.Queues {
-				RabbitMQChanel, Error := RabbitConnection.Connection.Channel()
-				if Error != nil {
-					return Error
-				}
-				RabbitMQChanel.QueueDeclare(RabbitQueue.Name, true,
-					false,
-					false,
-					false,
-					nil)
+func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
+	for _, RabbitMQSetting := range ApplicationCore.WebCore.RabbitMQSettings {
+		RabbitMQSetting.RabbitMQChanel.Chanel, Error = RabbitMQSetting.Connection.Channel()
+		if Error != nil {
+			return Error
+		}
+		for _, QueueUP := range RabbitMQSetting.RabbitMQChanel.QueuesUP {
 
+			QueueUP.Queue, Error = RabbitMQSetting.RabbitMQChanel.Chanel.QueueDeclare(QueueUP.Name, false,
+				false,
+				false,
+				false,
+				nil)
+			if Error != nil {
+				return Error
+			}
+
+		}
+		for _, RabbitMQSubscribe := range RabbitMQSetting.RabbitMQChanel.Subscribes {
+			_, Error := RabbitMQSetting.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Name, "", true, false, false, false, nil)
+			if Error != nil {
+				return Error
 			}
 
 		}
 
 	}
+
 	return Error
 }
+
 func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 
 	_, Error = os.Stat("Settings.json")
@@ -90,7 +100,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 			if Error != nil {
 				return Error
 			}
-			ApplicationCore.WebCore.RabbitMQConnections = append(ApplicationCore.WebCore.RabbitMQConnections, NewRabbitMQSetting)
+			ApplicationCore.WebCore.RabbitMQSettings = append(ApplicationCore.WebCore.RabbitMQSettings, NewRabbitMQSetting)
 
 		case "FileServer":
 			if ApplicationCore.WebCore.Router == nil {

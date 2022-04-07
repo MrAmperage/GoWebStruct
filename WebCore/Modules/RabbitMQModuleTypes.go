@@ -3,16 +3,25 @@ package Modules
 import "github.com/streadway/amqp"
 
 type RabbitMQSetting struct {
-	Connection *amqp.Connection
-	ModuleType string
-	Login      string
-	Password   string
-	Port       int64
-	Adress     string
-	Queues     []RabbitQueue
+	Connection     *amqp.Connection
+	ModuleType     string
+	Login          string
+	Password       string
+	Port           int64
+	Adress         string
+	RabbitMQChanel RabbitMQChanel
 }
 
-type RabbitQueue struct {
+type RabbitMQQueue struct {
 	Name  string
-	Queue *amqp.Queue
+	Queue amqp.Queue
+}
+
+type RabbitMQSubscribe struct {
+	Name string
+}
+type RabbitMQChanel struct {
+	Chanel     *amqp.Channel
+	QueuesUP   []RabbitMQQueue
+	Subscribes []RabbitMQSubscribe
 }

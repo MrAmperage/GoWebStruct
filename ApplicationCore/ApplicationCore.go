@@ -41,24 +41,16 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 	return Error
 }
 func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
-	for _, RabbitMQSetting := range ApplicationCore.WebCore.RabbitMQSettings {
-		RabbitMQSetting.RabbitMQChanel.Chanel, Error = RabbitMQSetting.Connection.Channel()
+	for _, RabbitMQ := range ApplicationCore.WebCore.RabbitMQ {
+		RabbitMQ.RabbitMQChanel.Chanel, Error = RabbitMQ.Connection.Channel()
 		if Error != nil {
 			return Error
 		}
-		for _, QueueUP := range RabbitMQSetting.RabbitMQChanel.QueuesUP {
-
-			QueueUP.Queue, Error = RabbitMQSetting.RabbitMQChanel.Chanel.QueueDeclare(QueueUP.Name, false,
-				false,
-				false,
-				false,
-				nil)
-			if Error != nil {
-				return Error
-			}
-
+		Error = RabbitMQ.QueuesRise()
+		if Error != nil {
+			return Error
 		}
-		Error := RabbitMQSetting.QueuesSubscribe()
+		Error = RabbitMQ.QueuesSubscribe()
 		if Error != nil {
 			return Error
 		}
@@ -90,18 +82,18 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 		switch ModuleType {
 
 		case "RabbitMQ":
-			var NewRabbitMQSetting Modules.RabbitMQSetting
+			var NewRabbitMQSetting Modules.RabbitMQ
 			mapstructure.Decode(Setting, &NewRabbitMQSetting)
 			NewRabbitMQSetting.Connection, Error = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%d/", NewRabbitMQSetting.Login, NewRabbitMQSetting.Password, NewRabbitMQSetting.Adress, NewRabbitMQSetting.Port))
 			if Error != nil {
 				return Error
 			}
-			ApplicationCore.WebCore.RabbitMQSettings = append(ApplicationCore.WebCore.RabbitMQSettings, NewRabbitMQSetting)
+			ApplicationCore.WebCore.RabbitMQ = append(ApplicationCore.WebCore.RabbitMQ, NewRabbitMQSetting)
 
 		case "FileServer":
 			if ApplicationCore.WebCore.Router == nil {
 				ApplicationCore.WebCore.Router = mux.NewRouter()
-				FileServer := http.FileServer(http.Dir("./Static"))
+				FileServer := http.FileServer(http.Dir("./Static/"))
 				ApplicationCore.WebCore.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static", FileServer))
 			}
 

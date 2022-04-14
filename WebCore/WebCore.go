@@ -7,7 +7,7 @@ import (
 
 type ControllerFunction func(ResponseWriter http.ResponseWriter, Request *http.Request) (Data interface{}, Error error)
 
-func (Middleware Middleware) ErrorHandlerMiddleware(ControllerFunction ControllerFunction) http.HandlerFunc {
+func (Middleware *Middleware) ErrorHandlerMiddleware(ControllerFunction ControllerFunction) http.HandlerFunc {
 	type ResponseData struct {
 		Data  interface{} `json:"Data,omitempty"`
 		Info  string      `json:"Info,omitempty"`

@@ -6,6 +6,9 @@ import (
 )
 
 type WebCore struct {
-	Router   *mux.Router
-	RabbitMQ []Modules.RabbitMQ
+	Router     *mux.Router
+	RabbitMQ   []Modules.RabbitMQ
+	Middleware Middleware
 }
+
+type Middleware struct{}

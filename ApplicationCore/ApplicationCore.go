@@ -41,19 +41,18 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 	return Error
 }
 func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
-	for _, RabbitMQ := range ApplicationCore.WebCore.RabbitMQ {
-		RabbitMQ.RabbitMQChanel.Chanel, Error = RabbitMQ.Connection.Channel()
-		if Error != nil {
-			return Error
-		}
-		Error = RabbitMQ.QueuesRise()
-		if Error != nil {
-			return Error
-		}
-		Error = RabbitMQ.QueuesSubscribe()
-		if Error != nil {
-			return Error
-		}
+
+	ApplicationCore.WebCore.RabbitMQ.RabbitMQChanel.Chanel, Error = ApplicationCore.WebCore.RabbitMQ.Connection.Channel()
+	if Error != nil {
+		return Error
+	}
+	Error = ApplicationCore.WebCore.RabbitMQ.QueuesRise()
+	if Error != nil {
+		return Error
+	}
+	Error = ApplicationCore.WebCore.RabbitMQ.QueuesSubscribe()
+	if Error != nil {
+		return Error
 	}
 
 	return Error
@@ -88,7 +87,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 			if Error != nil {
 				return Error
 			}
-			ApplicationCore.WebCore.RabbitMQ = append(ApplicationCore.WebCore.RabbitMQ, NewRabbitMQSetting)
+			ApplicationCore.WebCore.RabbitMQ = NewRabbitMQSetting
 
 		case "FileServer":
 			if ApplicationCore.WebCore.Router == nil {

@@ -1,7 +1,7 @@
 package WebCore
 
 import (
-	"github.com/MrAmperage/GoWebStruct/WebCore/Modules"
+	Modules "github.com/MrAmperage/GoWebStruct/WebCore/Modules/RabbitMQModule"
 	"github.com/gorilla/mux"
 )
 

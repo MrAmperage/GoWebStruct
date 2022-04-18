@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/MrAmperage/GoWebStruct/WebCore/Modules"
+	Modules "github.com/MrAmperage/GoWebStruct/WebCore/Modules/RabbitMQModule"
 	"github.com/gorilla/mux"
 	"github.com/mitchellh/mapstructure"
 	"github.com/streadway/amqp"
@@ -55,7 +55,7 @@ func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
 		return Error
 	}
 
-	Error = ApplicationCore.WebCore.RabbitMQ.ExchangeRise()
+	Error = ApplicationCore.WebCore.RabbitMQ.ExchangeRiseAndBind()
 	if Error != nil {
 
 		return Error

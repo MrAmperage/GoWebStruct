@@ -55,6 +55,12 @@ func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
 		return Error
 	}
 
+	Error = ApplicationCore.WebCore.RabbitMQ.ExchangeRise()
+	if Error != nil {
+
+		return Error
+	}
+
 	return Error
 }
 

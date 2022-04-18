@@ -1,6 +1,8 @@
 package Modules
 
-import "github.com/streadway/amqp"
+import (
+	"github.com/streadway/amqp"
+)
 
 type RabbitMQ struct {
 	Connection     *amqp.Connection
@@ -26,15 +28,26 @@ type RabbitMQSubscribe struct {
 	Name     string
 	Messages <-chan amqp.Delivery
 }
+type RabbitMQExchange struct {
+	ExchangeName string
+	QueueName    string
+	ExchangeType string
+	Durable      bool
+	AutoDelete   bool
+	Internal     bool
+	NoWait       bool
+	Args         amqp.Table
+}
 type RabbitMQChanel struct {
 	Chanel     *amqp.Channel
 	QueuesUP   []RabbitMQQueue
 	Subscribes []RabbitMQSubscribe
+	ExchangeUP []RabbitMQExchange
 }
 
-func (RabbitMQSetting *RabbitMQ) QueuesSubscribe() (Error error) {
-	for _, RabbitMQSubscribe := range RabbitMQSetting.RabbitMQChanel.Subscribes {
-		RabbitMQSubscribe.Messages, Error = RabbitMQSetting.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Name, "", true, false, false, false, nil)
+func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
+	for _, RabbitMQSubscribe := range RabbitMQ.RabbitMQChanel.Subscribes {
+		RabbitMQSubscribe.Messages, Error = RabbitMQ.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Name, "", true, false, false, false, nil)
 		if Error != nil {
 			return Error
 		}
@@ -58,4 +71,16 @@ func (RabbitMQ *RabbitMQ) QueuesRise() (Error error) {
 
 	}
 	return Error
+}
+
+func (RabbitMQ *RabbitMQ) ExchangeRise() (Error error) {
+	for _, RabbitMQExchange := range RabbitMQ.RabbitMQChanel.ExchangeUP {
+		Error := RabbitMQ.RabbitMQChanel.Chanel.ExchangeDeclare(RabbitMQExchange.ExchangeName, RabbitMQExchange.ExchangeType, RabbitMQExchange.Durable, RabbitMQExchange.AutoDelete, RabbitMQExchange.Internal, RabbitMQExchange.NoWait, RabbitMQExchange.Args)
+		if Error != nil {
+
+			return Error
+		}
+	}
+	return Error
+
 }

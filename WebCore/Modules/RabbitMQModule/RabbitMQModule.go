@@ -11,7 +11,7 @@ func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
 	return Error
 }
 
-func (RabbitMQ *RabbitMQ) QueuesRise() (Error error) {
+func (RabbitMQ *RabbitMQ) QueuesRiseAndBind() (Error error) {
 
 	for _, QueueUP := range RabbitMQ.RabbitMQChanel.QueuesUP {
 
@@ -22,6 +22,13 @@ func (RabbitMQ *RabbitMQ) QueuesRise() (Error error) {
 			QueueUP.Args)
 		if Error != nil {
 			return Error
+		}
+
+		if len(QueueUP.Binding.Key) != 0 {
+			Error = RabbitMQ.RabbitMQChanel.Chanel.QueueBind(QueueUP.Binding.Destination, QueueUP.Binding.Key, QueueUP.Binding.Source, QueueUP.Binding.NoWait, QueueUP.Binding.Args)
+			if Error != nil {
+				return Error
+			}
 		}
 
 	}

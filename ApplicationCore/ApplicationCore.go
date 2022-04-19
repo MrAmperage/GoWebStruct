@@ -47,7 +47,7 @@ func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
 	if Error != nil {
 		return Error
 	}
-	Error = ApplicationCore.WebCore.RabbitMQ.QueuesRise()
+	Error = ApplicationCore.WebCore.RabbitMQ.QueuesRiseAndBind()
 	if Error != nil {
 		return Error
 	}

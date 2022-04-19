@@ -47,18 +47,17 @@ func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
 	if Error != nil {
 		return Error
 	}
+	Error = ApplicationCore.WebCore.RabbitMQ.ExchangeRiseAndBind()
+	if Error != nil {
+
+		return Error
+	}
 	Error = ApplicationCore.WebCore.RabbitMQ.QueuesRiseAndBind()
 	if Error != nil {
 		return Error
 	}
 	Error = ApplicationCore.WebCore.RabbitMQ.QueuesSubscribe()
 	if Error != nil {
-		return Error
-	}
-
-	Error = ApplicationCore.WebCore.RabbitMQ.ExchangeRiseAndBind()
-	if Error != nil {
-
 		return Error
 	}
 

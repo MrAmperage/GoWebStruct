@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/MrAmperage/GoWebStruct/WebCore"
 	Modules "github.com/MrAmperage/GoWebStruct/WebCore/Modules/RabbitMQModule"
 	"github.com/gorilla/mux"
 	"github.com/mitchellh/mapstructure"
@@ -96,9 +97,12 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 			ApplicationCore.WebCore.RabbitMQ = NewRabbitMQSetting
 
 		case "FileServer":
+			var NewFileServerSettings WebCore.FileServerSetting
 			if ApplicationCore.WebCore.Router == nil {
 				ApplicationCore.WebCore.Router = mux.NewRouter()
-				FileServer := http.FileServer(http.Dir("./Static/"))
+				mapstructure.Decode(Setting, &NewFileServerSettings)
+				ApplicationCore.WebCore.FileServer.StaticDirectory = NewFileServerSettings.StaticDirectory
+				FileServer := http.FileServer(http.Dir(fmt.Sprintf("./%s/", NewFileServerSettings.StaticDirectory)))
 				ApplicationCore.WebCore.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static", FileServer))
 			}
 

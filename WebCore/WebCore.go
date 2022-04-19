@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-type ControllerFunction func(ResponseWriter http.ResponseWriter, Request *http.Request) (Data interface{}, Error error)
+type ControllerFunction func(ResponseWriter http.ResponseWriter, Request *http.Request, WebCoreLink WebCore) (Data interface{}, Error error)
 
-func (Middleware *Middleware) ErrorHandlerMiddleware(ControllerFunction ControllerFunction) http.HandlerFunc {
+func (Middleware *Middleware) HandlerMiddleware(ControllerFunction ControllerFunction, WebCore WebCore) http.HandlerFunc {
 	type ResponseData struct {
 		Data  interface{} `json:"Data,omitempty"`
 		Info  string      `json:"Info,omitempty"`
@@ -15,7 +15,7 @@ func (Middleware *Middleware) ErrorHandlerMiddleware(ControllerFunction Controll
 	}
 	return func(ResponseWriter http.ResponseWriter, Request *http.Request) {
 		Response := &ResponseData{}
-		Data, Error := ControllerFunction(ResponseWriter, Request)
+		Data, Error := ControllerFunction(ResponseWriter, Request, WebCore)
 		if Error != nil {
 			Response.Error = Error.Error()
 		} else {

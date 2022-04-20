@@ -24,15 +24,11 @@ func (ApplicationCore *ApplicationCore) Init() (Error error) {
 	return Error
 }
 
-func (ApplicationCore *ApplicationCore) Start() (Error error) {
+func (ApplicationCore *ApplicationCore) StartWebServer() (Error error) {
 
 	if ApplicationCore.WebCore.Router == nil {
 		return errors.New("вы не инициализировани настройки приложения")
 	} else {
-		Error := ApplicationCore.InitRabbitMQ()
-		if Error != nil {
-			return Error
-		}
 		Error = http.ListenAndServe(fmt.Sprintf(":%d", ApplicationCore.ApplicationPort), ApplicationCore.WebCore.Router)
 		if Error != nil {
 			return Error
@@ -41,7 +37,7 @@ func (ApplicationCore *ApplicationCore) Start() (Error error) {
 
 	return Error
 }
-func (ApplicationCore *ApplicationCore) InitRabbitMQ() (Error error) {
+func (ApplicationCore *ApplicationCore) StartRabbitMQ() (Error error) {
 
 	ApplicationCore.WebCore.RabbitMQ.RabbitMQChanel.Chanel, Error = ApplicationCore.WebCore.RabbitMQ.Connection.Channel()
 	if Error != nil {
@@ -118,7 +114,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 		ApplicationCore.ApplicationPort = int64(ApplicationPort.(float64))
 	} else {
 
-		return errors.New("В файле Settings.json не указан порт приложения")
+		return errors.New("в файле Settings.json не указан порт приложения")
 	}
 	return Error
 }

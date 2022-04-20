@@ -3,8 +3,8 @@ package RabbitMQModule
 import "errors"
 
 func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
-	for _, RabbitMQSubscribe := range RabbitMQ.RabbitMQChanel.Subscribes {
-		RabbitMQSubscribe.Messages, Error = RabbitMQ.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Queue, RabbitMQSubscribe.Consumer, RabbitMQSubscribe.AutoAck, RabbitMQSubscribe.Exclusive, RabbitMQSubscribe.noLocal, RabbitMQSubscribe.noWait, RabbitMQSubscribe.Args)
+	for Index, RabbitMQSubscribe := range RabbitMQ.RabbitMQChanel.Subscribes {
+		RabbitMQ.RabbitMQChanel.Subscribes[Index].Messages, Error = RabbitMQ.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Queue, RabbitMQSubscribe.Consumer, RabbitMQSubscribe.AutoAck, RabbitMQSubscribe.Exclusive, RabbitMQSubscribe.noLocal, RabbitMQSubscribe.noWait, RabbitMQSubscribe.Args)
 		if Error != nil {
 			return Error
 		}

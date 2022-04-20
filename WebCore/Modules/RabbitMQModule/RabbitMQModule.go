@@ -1,5 +1,7 @@
 package RabbitMQModule
 
+import "errors"
+
 func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
 	for _, RabbitMQSubscribe := range RabbitMQ.RabbitMQChanel.Subscribes {
 		RabbitMQSubscribe.Messages, Error = RabbitMQ.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Queue, RabbitMQSubscribe.Consumer, RabbitMQSubscribe.AutoAck, RabbitMQSubscribe.Exclusive, RabbitMQSubscribe.noLocal, RabbitMQSubscribe.noWait, RabbitMQSubscribe.Args)
@@ -10,7 +12,17 @@ func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
 	}
 	return Error
 }
+func (RabbitMQChanel *RabbitMQChanel) GetSubscribeByQueueName(QueueName string) (RabbitMQSubscribe *RabbitMQSubscribe, Error error) {
 
+	for _, Subscribe := range RabbitMQChanel.Subscribes {
+		if Subscribe.Queue == QueueName {
+			return &Subscribe, nil
+		}
+
+	}
+	return RabbitMQSubscribe, errors.New("не найдена запрашиваемая очередь")
+
+}
 func (RabbitMQ *RabbitMQ) QueuesRiseAndBind() (Error error) {
 
 	for _, QueueUP := range RabbitMQ.RabbitMQChanel.QueuesUP {

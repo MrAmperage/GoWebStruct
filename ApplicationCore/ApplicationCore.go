@@ -27,7 +27,7 @@ func (ApplicationCore *ApplicationCore) Init() (Error error) {
 func (ApplicationCore *ApplicationCore) Start() (Error error) {
 
 	if ApplicationCore.WebCore.Router == nil {
-		return errors.New("Вы не инициализировани настройки приложения")
+		return errors.New("вы не инициализировани настройки приложения")
 	} else {
 		Error := ApplicationCore.InitRabbitMQ()
 		if Error != nil {

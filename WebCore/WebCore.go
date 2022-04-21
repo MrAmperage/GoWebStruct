@@ -5,8 +5,6 @@ import (
 	"net/http"
 )
 
-type ControllerFunction func(ResponseWriter http.ResponseWriter, Request *http.Request, WebCoreLink *WebCore) (Data interface{}, Error error)
-
 func (Middleware *Middleware) HandlerMiddleware(ControllerFunction ControllerFunction, WebCore *WebCore) http.HandlerFunc {
 	type ResponseData struct {
 		Data  interface{} `json:"Data,omitempty"`

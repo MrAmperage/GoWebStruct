@@ -1,9 +1,15 @@
 package RabbitMQModule
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/streadway/amqp"
+)
 
 func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
 	for Index, RabbitMQSubscribe := range RabbitMQ.RabbitMQChanel.Subscribes {
+		RabbitMQ.RabbitMQChanel.Subscribes[Index].ChanelLink = RabbitMQ.RabbitMQChanel.Chanel
 		RabbitMQ.RabbitMQChanel.Subscribes[Index].Messages, Error = RabbitMQ.RabbitMQChanel.Chanel.Consume(RabbitMQSubscribe.Queue, RabbitMQSubscribe.Consumer, RabbitMQSubscribe.AutoAck, RabbitMQSubscribe.Exclusive, RabbitMQSubscribe.noLocal, RabbitMQSubscribe.noWait, RabbitMQSubscribe.Args)
 		if Error != nil {
 			return Error
@@ -63,5 +69,24 @@ func (RabbitMQ *RabbitMQ) ExchangeRiseAndBind() (Error error) {
 
 	}
 	return Error
+
+}
+func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQMessageCallbackFunction) {
+
+	for Message := range RabbitMQSubscribe.Messages {
+		_, Error := Callback(Message)
+		Message.Ack(true)
+
+		if Error != nil {
+			Error = RabbitMQSubscribe.ChanelLink.Publish("RportBoxExchange", "Router", false, false, amqp.Publishing{
+				ContentType: "application/json",
+				Body:        []byte(Error.Error()),
+			})
+			if Error != nil { //Ошибку в логи
+				fmt.Println(Error)
+			}
+		}
+
+	}
 
 }

@@ -2,6 +2,8 @@ package RabbitMQModule
 
 import (
 	"errors"
+
+	"github.com/streadway/amqp"
 )
 
 func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
@@ -67,6 +69,18 @@ func (RabbitMQ *RabbitMQ) ExchangeRiseAndBind() (Error error) {
 	}
 	return Error
 
+}
+func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(CorrelationId string) (RabbitMessage amqp.Delivery, Error error) {
+
+	for Message := range RabbitMQSubscribe.Messages {
+		if CorrelationId == Message.CorrelationId {
+			return Message, nil
+
+		}
+
+	}
+
+	return RabbitMessage, errors.New("не найдено сообщение")
 }
 func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQMessageCallbackFunction) {
 

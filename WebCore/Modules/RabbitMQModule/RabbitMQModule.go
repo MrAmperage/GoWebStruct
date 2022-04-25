@@ -72,7 +72,6 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQM
 
 	for Message := range RabbitMQSubscribe.Messages {
 		Callback(Message)
-		Message.Ack(true)
 
 	}
 

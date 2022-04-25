@@ -61,4 +61,4 @@ type RabbitMQChanel struct {
 	Subscribes []RabbitMQSubscribe
 	ExchangeUP []RabbitMQExchange
 }
-type RabbitMQMessageCallbackFunction func(RabbitMQMessage amqp.Delivery) (Data interface{}, Error error)
+type RabbitMQMessageCallbackFunction func(RabbitMQMessage amqp.Delivery)

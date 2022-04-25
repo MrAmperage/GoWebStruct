@@ -2,9 +2,6 @@ package RabbitMQModule
 
 import (
 	"errors"
-	"fmt"
-
-	"github.com/streadway/amqp"
 )
 
 func (RabbitMQ *RabbitMQ) QueuesSubscribe() (Error error) {
@@ -74,18 +71,8 @@ func (RabbitMQ *RabbitMQ) ExchangeRiseAndBind() (Error error) {
 func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQMessageCallbackFunction) {
 
 	for Message := range RabbitMQSubscribe.Messages {
-		_, Error := Callback(Message)
+		Callback(Message)
 		Message.Ack(true)
-
-		if Error != nil {
-			Error = RabbitMQSubscribe.ChanelLink.Publish("RportBoxExchange", "Router", false, false, amqp.Publishing{
-				ContentType: "application/json",
-				Body:        []byte(Error.Error()),
-			})
-			if Error != nil { //Ошибку в логи
-				fmt.Println(Error)
-			}
-		}
 
 	}
 

@@ -38,6 +38,17 @@ func (ApplicationCore *ApplicationCore) StartWebServer() (Error error) {
 
 	return Error
 }
+func (ApplicationCore *ApplicationCore) StartDatabaseConnections() (Error error) {
+	for _, PostgreSQL := range ApplicationCore.WebCore.PostgreSQL {
+		Error = PostgreSQL.InitPostgreSQL()
+		if Error != nil {
+			return
+		}
+
+	}
+
+	return
+}
 func (ApplicationCore *ApplicationCore) StartRabbitMQ() (Error error) {
 
 	ApplicationCore.WebCore.RabbitMQ.RabbitMQChanel.Chanel, Error = ApplicationCore.WebCore.RabbitMQ.Connection.Channel()
@@ -103,7 +114,7 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 			}
 
 		case "PostgreSQLDatabase":
-			var NewPostgreSQLSetting PostgreSQLModule.PostgreSQLSetting
+			var NewPostgreSQLSetting PostgreSQLModule.PostgreSQL
 			mapstructure.Decode(Setting, &NewPostgreSQLSetting)
 			ApplicationCore.WebCore.PostgreSQL = append(ApplicationCore.WebCore.PostgreSQL, NewPostgreSQLSetting)
 

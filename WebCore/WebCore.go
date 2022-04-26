@@ -8,7 +8,7 @@ import (
 	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/PostgreSQLModule"
 )
 
-func (WebCore *WebCore) GetPostgreSQLConnectionByName(Name string) (Connection *PostgreSQLModule.PostgreSQLSetting, Error error) {
+func (WebCore *WebCore) GetPostgreSQLConnectionByName(Name string) (Connection *PostgreSQLModule.PostgreSQL, Error error) {
 	for Index, PostgreSQLConnection := range WebCore.PostgreSQL {
 		if PostgreSQLConnection.ConnectionName == Name {
 			return &WebCore.PostgreSQL[Index], nil

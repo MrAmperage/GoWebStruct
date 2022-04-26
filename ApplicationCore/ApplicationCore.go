@@ -39,8 +39,8 @@ func (ApplicationCore *ApplicationCore) StartWebServer() (Error error) {
 	return Error
 }
 func (ApplicationCore *ApplicationCore) StartDatabaseConnections() (Error error) {
-	for _, PostgreSQL := range ApplicationCore.WebCore.PostgreSQL {
-		Error = PostgreSQL.InitPostgreSQL()
+	for Index, _ := range ApplicationCore.WebCore.PostgreSQL {
+		Error = ApplicationCore.WebCore.PostgreSQL[Index].InitPostgreSQL()
 		if Error != nil {
 			return
 		}

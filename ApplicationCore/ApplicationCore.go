@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/MrAmperage/GoWebStruct/WebCore"
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/PostgreSQLModule"
 	Modules "github.com/MrAmperage/GoWebStruct/WebCore/Modules/RabbitMQModule"
 	"github.com/gorilla/mux"
 	"github.com/mitchellh/mapstructure"
@@ -101,7 +102,11 @@ func (ApplicationCore *ApplicationCore) ReadSettings() (Error error) {
 				ApplicationCore.WebCore.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static", FileServer))
 			}
 
-		case "Database":
+		case "PostgreSQLDatabase":
+			var NewPostgreSQLSetting PostgreSQLModule.PostgreSQLSetting
+			mapstructure.Decode(Setting, &NewPostgreSQLSetting)
+			ApplicationCore.WebCore.PostgreSQL = append(ApplicationCore.WebCore.PostgreSQL, NewPostgreSQLSetting)
+
 		}
 
 	}

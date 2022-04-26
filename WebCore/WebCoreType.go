@@ -3,6 +3,7 @@ package WebCore
 import (
 	"net/http"
 
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/PostgreSQLModule"
 	Modules "github.com/MrAmperage/GoWebStruct/WebCore/Modules/RabbitMQModule"
 	"github.com/gorilla/mux"
 )
@@ -10,6 +11,7 @@ import (
 type WebCore struct {
 	Router     *mux.Router
 	RabbitMQ   Modules.RabbitMQ
+	PostgreSQL []PostgreSQLModule.PostgreSQLSetting
 	Middleware Middleware
 	FileServer FileServerSetting
 }

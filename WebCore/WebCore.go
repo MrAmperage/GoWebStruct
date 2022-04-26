@@ -2,9 +2,20 @@ package WebCore
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/PostgreSQLModule"
 )
 
+func (WebCore *WebCore) GetPostgreSQLConnectionByName(Name string) (Connection *PostgreSQLModule.PostgreSQLSetting, Error error) {
+	for Index, PostgreSQLConnection := range WebCore.PostgreSQL {
+		if PostgreSQLConnection.ConnectionName == Name {
+			return &WebCore.PostgreSQL[Index], nil
+		}
+	}
+	return nil, errors.New("не найдено запрашиваемое подключение")
+}
 func (Middleware *Middleware) HandlerMiddleware(ControllerFunction ControllerFunction, WebCore *WebCore) http.HandlerFunc {
 	type ResponseData struct {
 		Data  interface{} `json:"Data,omitempty"`

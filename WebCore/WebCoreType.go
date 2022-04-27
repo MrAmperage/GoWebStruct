@@ -11,7 +11,7 @@ import (
 type WebCore struct {
 	Router     *mux.Router
 	RabbitMQ   Modules.RabbitMQ
-	PostgreSQL []PostgreSQLModule.PostgreSQL
+	PostgreSQL PostgreSQLModule.PostgreSQLArray
 	Middleware Middleware
 	FileServer FileServerSetting
 }

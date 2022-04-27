@@ -11,3 +11,6 @@ type PostgreSQL struct {
 	Password       string
 	DatabaseName   string
 }
+type PostgreSQLArray struct {
+	Elements []PostgreSQL
+}

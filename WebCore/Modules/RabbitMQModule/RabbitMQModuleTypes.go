@@ -26,15 +26,16 @@ type RabbitMQQueue struct {
 }
 
 type RabbitMQSubscribe struct {
-	Messages   <-chan amqp.Delivery
-	Queue      string
-	Consumer   string
-	AutoAck    bool
-	Exclusive  bool
-	noLocal    bool
-	noWait     bool
-	Args       amqp.Table
-	ChanelLink *amqp.Channel
+	Messages       <-chan amqp.Delivery
+	Queue          string
+	Consumer       string
+	AutoAck        bool
+	Exclusive      bool
+	noLocal        bool
+	noWait         bool
+	Args           amqp.Table
+	ChanelLink     *amqp.Channel
+	MessageEmmiter MessageEmmiter
 }
 type RabbitMQExchange struct {
 	ExchangeName string
@@ -63,6 +64,14 @@ type RabbitMQChanel struct {
 }
 type RabbitMQMessageCallbackFunction func(RabbitMQMessage amqp.Delivery)
 
-type MessageEmmiter struct{}
+type MessageEmmiter struct {
+	MessageHandlers map[string]EmmiterFunction
+}
+type RoutingObject struct {
+	MessageType        string
+	RoutingKey         string
+	EmmiterFunction    EmmiterFunction
+	MessageEmmiterLink *MessageEmmiter
+}
 
-type EmmiterFunction func(Message amqp.Delivery)
+type EmmiterFunction func(Message amqp.Delivery) (Data any, Error error)

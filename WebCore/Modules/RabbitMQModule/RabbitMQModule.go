@@ -82,17 +82,34 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(Correlatio
 
 	return RabbitMessage, errors.New("не найдено сообщение")
 }
-func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQMessageCallbackFunction) {
+func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing() {
 
 	for Message := range RabbitMQSubscribe.Messages {
-		Callback(Message)
+
+		Function, HasFunction := RabbitMQSubscribe.MessageEmmiter.MessageHandlers[Message.Type+Message.RoutingKey]
+		if HasFunction {
+			Function(Message)
+			RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
+				CorrelationId: Message.CorrelationId,
+				Body:          []byte("Ответное сообщение"),
+			})
+		}
 
 	}
 
 }
 
-func (MessageEmmiter *MessageEmmiter) Handler(RoutingKey string, EmmiterFunction EmmiterFunction) (Emmiter MessageEmmiter) {
-	return
+func (MessageEmmiter *MessageEmmiter) Handler(RoutingKey string, EmmiterFunction EmmiterFunction) (Routing *RoutingObject) {
+	return &RoutingObject{RoutingKey: RoutingKey, EmmiterFunction: EmmiterFunction, MessageEmmiterLink: MessageEmmiter}
 
 }
-func (MessageEmmiter *MessageEmmiter) Method(Method string) {}
+func (RoutingObject *RoutingObject) Method(Method string) {
+	if RoutingObject.MessageEmmiterLink.MessageHandlers == nil {
+		RoutingObject.MessageEmmiterLink.MessageHandlers = make(map[string]EmmiterFunction)
+
+	}
+	RoutingObject.MessageType = Method
+	HandlerKey := RoutingObject.MessageType + RoutingObject.RoutingKey
+	RoutingObject.MessageEmmiterLink.MessageHandlers[HandlerKey] = RoutingObject.EmmiterFunction
+
+}

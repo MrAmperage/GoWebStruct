@@ -90,3 +90,9 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(Callback RabbitMQM
 	}
 
 }
+
+func (MessageEmmiter *MessageEmmiter) Handler(RoutingKey string, EmmiterFunction EmmiterFunction) (Emmiter MessageEmmiter) {
+	return
+
+}
+func (MessageEmmiter *MessageEmmiter) Method(Method string) {}

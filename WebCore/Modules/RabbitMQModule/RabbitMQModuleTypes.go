@@ -62,3 +62,7 @@ type RabbitMQChanel struct {
 	ExchangeUP []RabbitMQExchange
 }
 type RabbitMQMessageCallbackFunction func(RabbitMQMessage amqp.Delivery)
+
+type MessageEmmiter struct{}
+
+type EmmiterFunction func(Message amqp.Delivery)

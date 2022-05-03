@@ -75,7 +75,13 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(Correlatio
 
 	for Message := range RabbitMQSubscribe.Messages {
 		if CorrelationId == Message.CorrelationId {
-			return Message, nil
+
+			if Message.Type == "Error" {
+				Error = errors.New(string(Message.Body))
+
+			}
+
+			return Message, Error
 
 		}
 
@@ -89,33 +95,25 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing() {
 
 		Function, HasFunction := RabbitMQSubscribe.MessageEmmiter.MessageHandlers[Message.Type+Message.RoutingKey]
 		if HasFunction {
-			Response := ResponseData{}
 			Data, Error := Function(Message)
 			if Error != nil {
-				Response.Error = Error.Error()
-			} else {
-				switch Data.(type) {
-				case string:
-					Response.Info = Data.(string)
-				default:
-					Response.Data = Data
-				}
 
-			}
-			ResponseByte, Error := json.Marshal(Response)
-			if Error != nil {
 				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
+					Type:          "Error",
 					CorrelationId: Message.CorrelationId,
-					Body:          []byte(`{"Error": "` + Error.Error() + `"}`),
+					Body:          []byte(Error.Error()),
 				})
 
 			} else {
-				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
-					CorrelationId: Message.CorrelationId,
-					Body:          ResponseByte,
-				})
-			}
 
+				DataByte, _ := json.Marshal(Data)
+				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
+					Type:          "Answer",
+					CorrelationId: Message.CorrelationId,
+					Body:          DataByte,
+				})
+
+			}
 		}
 
 	}

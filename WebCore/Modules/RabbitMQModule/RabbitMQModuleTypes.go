@@ -75,3 +75,8 @@ type RoutingObject struct {
 }
 
 type EmmiterFunction func(Message amqp.Delivery) (Data any, Error error)
+type ResponseData struct {
+	Data  interface{} `json:"Data,omitempty"`
+	Info  string      `json:"Info,omitempty"`
+	Error string      `json:"Error,omitempty"`
+}

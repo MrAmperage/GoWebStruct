@@ -6,11 +6,7 @@ import (
 )
 
 func (Middleware *Middleware) HandlerMiddleware(ControllerFunction ControllerFunction, WebCore *WebCore) http.HandlerFunc {
-	type ResponseData struct {
-		Data  interface{} `json:"Data,omitempty"`
-		Info  string      `json:"Info,omitempty"`
-		Error string      `json:"Error,omitempty"`
-	}
+
 	return func(ResponseWriter http.ResponseWriter, Request *http.Request) {
 		Response := &ResponseData{}
 		Data, Error := ControllerFunction(ResponseWriter, Request, WebCore)

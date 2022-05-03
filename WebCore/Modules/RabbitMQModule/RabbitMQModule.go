@@ -1,6 +1,7 @@
 package RabbitMQModule
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/streadway/amqp"
@@ -88,11 +89,33 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing() {
 
 		Function, HasFunction := RabbitMQSubscribe.MessageEmmiter.MessageHandlers[Message.Type+Message.RoutingKey]
 		if HasFunction {
-			Function(Message)
-			RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
-				CorrelationId: Message.CorrelationId,
-				Body:          []byte("Ответное сообщение"),
-			})
+			Response := ResponseData{}
+			Data, Error := Function(Message)
+			if Error != nil {
+				Response.Error = Error.Error()
+			} else {
+				switch Data.(type) {
+				case string:
+					Response.Info = Data.(string)
+				default:
+					Response.Data = Data
+				}
+
+			}
+			ResponseByte, Error := json.Marshal(Response)
+			if Error != nil {
+				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
+					CorrelationId: Message.CorrelationId,
+					Body:          []byte(`{"Error": "` + Error.Error() + `"}`),
+				})
+
+			} else {
+				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{
+					CorrelationId: Message.CorrelationId,
+					Body:          ResponseByte,
+				})
+			}
+
 		}
 
 	}

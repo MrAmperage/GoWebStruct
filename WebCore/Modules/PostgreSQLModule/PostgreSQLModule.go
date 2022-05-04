@@ -13,10 +13,10 @@ func (PostgreSQLArray *PostgreSQLArray) Add(PostgreSQL PostgreSQL) {
 	PostgreSQLArray.Elements = append(PostgreSQLArray.Elements, PostgreSQL)
 
 }
-func (PostgreSQLArray *PostgreSQLArray) FindByName(Name string) (PostgreSQL PostgreSQL, Error error) {
+func (PostgreSQLArray *PostgreSQLArray) FindByName(Name string) (PostgreSQL *PostgreSQL, Error error) {
 	for Index, Postgre := range PostgreSQLArray.Elements {
 		if Postgre.ConnectionName == Name {
-			return PostgreSQLArray.Elements[Index], Error
+			return &PostgreSQLArray.Elements[Index], Error
 
 		}
 	}

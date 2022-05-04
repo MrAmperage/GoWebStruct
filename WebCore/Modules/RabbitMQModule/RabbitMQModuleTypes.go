@@ -1,6 +1,7 @@
 package RabbitMQModule
 
 import (
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/ORMModule"
 	"github.com/streadway/amqp"
 )
 
@@ -74,9 +75,4 @@ type RoutingObject struct {
 	MessageEmmiterLink *MessageEmmiter
 }
 
-type EmmiterFunction func(Message amqp.Delivery) (Data any, Error error)
-type ResponseData struct {
-	Data  interface{} `json:"Data,omitempty"`
-	Info  string      `json:"Info,omitempty"`
-	Error string      `json:"Error,omitempty"`
-}
+type EmmiterFunction func(Message amqp.Delivery, ORMs []ORMModule.ORM) (Data any, Error error)

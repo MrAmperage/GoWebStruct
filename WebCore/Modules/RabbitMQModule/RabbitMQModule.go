@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/MrAmperage/GoWebStruct/WebCore/Modules/ORMModule"
 	"github.com/streadway/amqp"
 )
 
@@ -89,13 +90,13 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(Correlatio
 
 	return RabbitMessage, errors.New("не найдено сообщение")
 }
-func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing() {
+func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(ORMs ...ORMModule.ORM) {
 
 	for Message := range RabbitMQSubscribe.Messages {
 
 		Function, HasFunction := RabbitMQSubscribe.MessageEmmiter.MessageHandlers[Message.Type+Message.RoutingKey]
 		if HasFunction {
-			Data, Error := Function(Message)
+			Data, Error := Function(Message, ORMs)
 			if Error != nil {
 
 				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{

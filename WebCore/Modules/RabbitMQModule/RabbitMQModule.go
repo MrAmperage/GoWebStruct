@@ -90,7 +90,7 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(Correlatio
 
 	return RabbitMessage, errors.New("не найдено сообщение")
 }
-func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(ORMs ...ORMModule.ORM) {
+func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(ORMs ...ORMModule.ORMInterface) {
 
 	for Message := range RabbitMQSubscribe.Messages {
 

@@ -75,4 +75,4 @@ type RoutingObject struct {
 	MessageEmmiterLink *MessageEmmiter
 }
 
-type EmmiterFunction func(Message amqp.Delivery, ORMs []ORMModule.ORMInterface) (Data any, Error error)
+type EmmiterFunction func(Message amqp.Delivery, ORMs ORMModule.ORMArray) (Data any, Error error)

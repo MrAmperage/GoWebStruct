@@ -1,11 +1,14 @@
 package ORMModule
 
-import "github.com/MrAmperage/GoWebStruct/WebCore/Modules/PostgreSQLModule"
-
-type ORM struct {
-	PostgreSQLArray *PostgreSQLModule.PostgreSQLArray
-}
+import (
+	"gorm.io/gorm"
+)
 
 type ORMInterface interface {
-	InitORM(PostgreSQLArray *PostgreSQLModule.PostgreSQLArray)
+	GetName() (Name string)
+	SetConnection(ConnectionLink *gorm.DB)
+}
+
+type ORMArray struct {
+	ORMElements []ORMInterface
 }

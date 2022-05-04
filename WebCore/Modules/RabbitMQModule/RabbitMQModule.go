@@ -90,13 +90,13 @@ func (RabbitMQSubscribe *RabbitMQSubscribe) GetMessageByCorrelationId(Correlatio
 
 	return RabbitMessage, errors.New("не найдено сообщение")
 }
-func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(ORMs ...ORMModule.ORMInterface) {
+func (RabbitMQSubscribe *RabbitMQSubscribe) MessageProcessing(ORMs *ORMModule.ORMArray) {
 
 	for Message := range RabbitMQSubscribe.Messages {
 
 		Function, HasFunction := RabbitMQSubscribe.MessageEmmiter.MessageHandlers[Message.Type+Message.RoutingKey]
 		if HasFunction {
-			Data, Error := Function(Message, ORMs)
+			Data, Error := Function(Message, *ORMs)
 			if Error != nil {
 
 				RabbitMQSubscribe.ChanelLink.Publish("", Message.ReplyTo, false, false, amqp.Publishing{

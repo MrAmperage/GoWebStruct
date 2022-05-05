@@ -27,6 +27,11 @@ type ResponseData struct {
 	Info  string      `json:"Info,omitempty"`
 	Error string      `json:"Error,omitempty"`
 }
-type AuthenticationData struct {
+type AuthenticationResponse struct {
 	AuthenticationToken string
+}
+
+type AuthenticationRequest struct {
+	Username string
+	Password string
 }

@@ -23,7 +23,7 @@ type RabbitMQQueue struct {
 	Exclusive  bool
 	NoWait     bool
 	Args       amqp.Table
-	Binding    RabbitMQBinding
+	Bindings   []RabbitMQBinding
 }
 
 type RabbitMQSubscribe struct {
@@ -47,7 +47,7 @@ type RabbitMQExchange struct {
 	Internal     bool
 	NoWait       bool
 	Args         amqp.Table
-	Binding      RabbitMQBinding
+	Bindings     []RabbitMQBinding
 }
 
 type RabbitMQBinding struct {

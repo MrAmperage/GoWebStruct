@@ -42,12 +42,13 @@ func (RabbitMQ *RabbitMQ) QueuesRiseAndBind() (Error error) {
 		if Error != nil {
 			return Error
 		}
+		for _, Binding := range QueueUP.Bindings {
 
-		if len(QueueUP.Binding.Key) != 0 {
-			Error = RabbitMQ.RabbitMQChanel.Chanel.QueueBind(QueueUP.Binding.Destination, QueueUP.Binding.Key, QueueUP.Binding.Source, QueueUP.Binding.NoWait, QueueUP.Binding.Args)
+			Error = RabbitMQ.RabbitMQChanel.Chanel.QueueBind(Binding.Destination, Binding.Key, Binding.Source, Binding.NoWait, Binding.Args)
 			if Error != nil {
 				return Error
 			}
+
 		}
 
 	}
@@ -61,8 +62,10 @@ func (RabbitMQ *RabbitMQ) ExchangeRiseAndBind() (Error error) {
 
 			return Error
 		}
-		if len(RabbitMQExchange.Binding.Key) != 0 {
-			Error = RabbitMQ.RabbitMQChanel.Chanel.ExchangeBind(RabbitMQExchange.Binding.Destination, RabbitMQExchange.Binding.Key, RabbitMQExchange.Binding.Source, RabbitMQExchange.Binding.NoWait, RabbitMQExchange.Binding.Args)
+
+		for _, Binding := range RabbitMQExchange.Bindings {
+
+			Error = RabbitMQ.RabbitMQChanel.Chanel.ExchangeBind(Binding.Destination, Binding.Key, Binding.Source, Binding.NoWait, Binding.Args)
 			if Error != nil {
 				return Error
 			}

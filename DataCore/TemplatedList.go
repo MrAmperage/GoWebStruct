@@ -2,7 +2,7 @@ package DataCore
 
 import "github.com/jackc/pgtype"
 
-type TemplatedList struct {
+type TemplatedList[Data any] struct {
 	Template pgtype.JSONB
-	DataList []any
+	Data     []Data
 }
